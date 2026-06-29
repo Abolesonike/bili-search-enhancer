@@ -57,6 +57,65 @@
   flex-shrink: 0;
 }
 
+/* 最小化/关闭按钮 */
+.drag-handle {
+  position: relative;
+}
+.panel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #aaa;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: all 0.12s ease;
+  line-height: 1;
+  margin-left: auto;
+}
+.panel-btn:hover {
+  background: rgba(251, 114, 153, 0.12);
+  color: #FB7299;
+}
+.minimize-btn {
+  margin-left: auto;
+}
+.close-btn {
+  color: #ccc;
+}
+.close-btn:hover {
+  background: rgba(255, 80, 80, 0.12);
+  color: #ff5050;
+}
+
+/* 收起后的悬浮标签 */
+.collapsed-tab {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 2147483647;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 20px rgba(251, 114, 153, 0.25);
+  cursor: pointer;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FB7299;
+  border: 1px solid rgba(251, 114, 153, 0.15);
+  transition: all 0.15s ease;
+  animation: fadeSlide 0.3s ease-out;
+}
+.collapsed-tab:hover {
+  background: rgba(251, 114, 153, 0.92);
+  color: white;
+}
+
 /* 搜索区 */
 .search-section {
   display: flex;
@@ -299,6 +358,12 @@
   .drag-handle svg {
     width: 16px;
     height: 16px;
+  }
+  .collapsed-tab {
+    top: 12px;
+    left: 12px;
+    font-size: 13px;
+    padding: 8px 14px;
   }
 }
 

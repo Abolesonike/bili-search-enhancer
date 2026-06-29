@@ -124,8 +124,10 @@
           <path d="M2 17L12 22L22 17" stroke="#FB7299" stroke-width="2" stroke-linejoin="round"/>
           <path d="M2 12L12 17L22 12" stroke="#FB7299" stroke-width="2" stroke-linejoin="round"/>
         </svg>
-        <span>考古时间胶囊</span>
+        <span class="drag-title">考古时间胶囊</span>
         <span class="badge">BETA</span>
+        <button class="panel-btn minimize-btn" id="archaeology-minimize-btn" title="最小化">─</button>
+        <button class="panel-btn close-btn" id="archaeology-close-btn" title="关闭">✕</button>
       </div>
 
       <div class="search-section">
@@ -181,6 +183,21 @@
       </div>
     `;
     document.body.appendChild(container);
+
+    // 折叠后的悬浮标签作为 container 的兄弟元素，单独追加到 body
+    const collapsedTabEl = document.createElement('div');
+    collapsedTabEl.id = 'archaeology-collapsed-tab';
+    collapsedTabEl.className = 'collapsed-tab';
+    collapsedTabEl.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+      <span>考古</span>
+    `;
+    document.body.appendChild(collapsedTabEl);
+    collapsedTab = collapsedTabEl;
     return container;
   }
 
@@ -188,6 +205,7 @@
   let container, searchInput, searchBtn, partitionSelect, orderSelect, statusDisplay, resetBtn;
   let timelineTrackEl, timelineRangeEl, timelineReadoutEl, timelineTicksEl;
   let handleStartEl, handleEndEl, randomBtn;
+  let minimizeBtn, closeBtn, collapsedTab;
 
   // ---------- 时间轴状态 ----------
   let timelineTotalMonths = getTimelineTotalMonths();
@@ -204,6 +222,9 @@
     orderSelect = document.getElementById('archaeology-order-select');
     statusDisplay = document.getElementById('archaeology-status');
     resetBtn = document.getElementById('archaeology-reset-btn');
+    minimizeBtn = document.getElementById('archaeology-minimize-btn');
+    closeBtn = document.getElementById('archaeology-close-btn');
+    collapsedTab = document.getElementById('archaeology-collapsed-tab');
 
     timelineTrackEl = document.getElementById('archaeology-timeline-track');
     timelineRangeEl = document.getElementById('archaeology-timeline-range');
@@ -337,6 +358,29 @@
     setTimeout(() => {
       performSearch();
     }, 180);
+  }
+
+  // ---------- 最小化/恢复/关闭 ----------
+  function minimizePanel() {
+    container.style.display = 'none';
+    collapsedTab.style.display = 'flex';
+  }
+
+  function restorePanel() {
+    container.style.display = '';
+    collapsedTab.style.display = 'none';
+    // 恢复后再次滚动到默认年份
+    const defaultSection = container.querySelector(`.preset-year-section[data-year="${DEFAULT_EXPANDED_YEAR}"]`);
+    if (defaultSection) {
+      setTimeout(() => {
+        defaultSection.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }, 100);
+    }
+  }
+
+  function closePanel() {
+    container.style.display = 'none';
+    collapsedTab.style.display = 'none';
   }
 
   // ---------- 重置 ----------
@@ -515,6 +559,8 @@
 
     dragHandle.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
+      // 防止按钮点击触发拖拽
+      if (e.target.closest('button')) return;
       e.preventDefault();
       const rect = container.getBoundingClientRect();
       offsetX = e.clientX - rect.left;
@@ -565,6 +611,54 @@
     });
   }
 
+  // ---------- 折叠标签拖拽 ----------
+  function setupCollapsedTabDrag() {
+    let isDragging = false;
+    let tabWasDragged = false;
+    let offsetX = 0, offsetY = 0;
+
+    collapsedTab.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      if (e.target.closest('button')) return;
+      e.preventDefault();
+      const rect = collapsedTab.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      isDragging = true;
+      tabWasDragged = false;
+      collapsedTab.style.cursor = 'grabbing';
+      collapsedTab.style.transition = 'none';
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      tabWasDragged = true;
+      let left = e.clientX - offsetX;
+      let top = e.clientY - offsetY;
+      const maxX = window.innerWidth - collapsedTab.offsetWidth;
+      const maxY = window.innerHeight - collapsedTab.offsetHeight;
+      left = Math.max(0, Math.min(left, maxX));
+      top = Math.max(0, Math.min(top, maxY));
+      collapsedTab.style.left = left + 'px';
+      collapsedTab.style.top = top + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      collapsedTab.style.cursor = '';
+      collapsedTab.style.transition = '';
+      document.body.style.userSelect = '';
+    });
+
+    collapsedTab.addEventListener('click', (e) => {
+      if (tabWasDragged) { tabWasDragged = false; return; }
+      restorePanel();
+    });
+  }
+
   // ---------- 绑定事件 ----------
   function bindEvents() {
     searchBtn.addEventListener('click', performSearch);
@@ -576,6 +670,9 @@
     });
     resetBtn.addEventListener('click', resetFilters);
     randomBtn.addEventListener('click', performRandomJump);
+
+    minimizeBtn.addEventListener('click', minimizePanel);
+    closeBtn.addEventListener('click', closePanel);
 
     partitionSelect.addEventListener('change', updateStatusPreview);
     orderSelect.addEventListener('change', updateStatusPreview);
@@ -598,6 +695,7 @@
     setupTimeline();
     bindEvents();
     setupDrag();
+    setupCollapsedTabDrag();
     setupPresetKeywords();
     autoFillFromUrl();
 
