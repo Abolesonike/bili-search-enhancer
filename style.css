@@ -111,18 +111,54 @@
   transform: scale(0.95);
 }
 
-/* 关键词预设 */
+/* 关键词预设 - 按年份折叠 */
 .preset-keywords {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 4px;
   padding-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.preset-year-section {
+  display: flex;
+  flex-direction: column;
+}
+.preset-year-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+  user-select: none;
+}
+.preset-year-header:hover {
+  background: rgba(251, 114, 153, 0.08);
+}
+.preset-year-arrow {
+  font-size: 10px;
+  color: #FB7299;
+  width: 12px;
+  text-align: center;
+}
+.preset-year-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FB7299;
+}
+.preset-year-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 4px 6px 4px 24px;
 }
 .preset-keyword {
   background: rgba(251, 114, 153, 0.06);
   border: 1px solid rgba(251, 114, 153, 0.12);
   border-radius: 20px;
-  padding: 4px 14px;
+  padding: 3px 12px;
   font-size: 12px;
   color: #666;
   cursor: pointer;
@@ -249,7 +285,13 @@
   }
   .preset-keyword {
     font-size: 11px;
-    padding: 3px 10px;
+    padding: 2px 9px;
+  }
+  .preset-year-label {
+    font-size: 12px;
+  }
+  .preset-year-buttons {
+    padding-left: 20px;
   }
   .drag-handle {
     font-size: 13px;

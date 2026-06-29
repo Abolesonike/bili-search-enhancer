@@ -22,12 +22,29 @@
     { value: '33', label: '知识' },
   ];
 
-  const KEYWORD_PRESETS = [
-    '初音未来', '东方Project', '宅舞', '鬼畜全明星', '金坷垃',
-    '葛炮', '元首', '蓝猫', '黑猫警长', '葫芦娃',
-    '老番茄', 'LexBurner', '敖厂长', '纯黑', '怕上火暴王老菊',
-    'bilibili2012', 'bilibili2013', '哔哩哔哩2014'
-  ];
+  // 预设关键词按年份划分，展开时渲染按钮，收起时隐藏
+  // 默认展开 2018 年
+  const KEYWORD_PRESETS_BY_YEAR = {
+    2009: ['占位词1', '占位词2', '占位词3'],
+    2010: ['占位词1', '占位词2', '占位词3'],
+    2011: ['占位词1', '占位词2', '占位词3'],
+    2012: ['占位词1', '占位词2', '占位词3'],
+    2013: ['占位词1', '占位词2', '占位词3'],
+    2014: ['占位词1', '占位词2', '占位词3'],
+    2015: ['占位词1', '占位词2', '占位词3'],
+    2016: ['占位词1', '占位词2', '占位词3'],
+    2017: ['占位词1', '占位词2', '占位词3'],
+    2018: ['占位词1', '占位词2', '占位词3'],
+    2019: ['占位词1', '占位词2', '占位词3'],
+    2020: ['占位词1', '占位词2', '占位词3'],
+    2021: ['占位词1', '占位词2', '占位词3'],
+    2022: ['占位词1', '占位词2', '占位词3'],
+    2023: ['占位词1', '占位词2', '占位词3'],
+    2024: ['占位词1', '占位词2', '占位词3'],
+    2025: ['占位词1', '占位词2', '占位词3'],
+    2026: ['占位词1', '占位词2', '占位词3'],
+  };
+  const DEFAULT_EXPANDED_YEAR = 2018;
 
   // ---------- 时间轴工具函数 ----------
   function getCurrentYearMonth() {
@@ -81,9 +98,24 @@
     container.setAttribute('data-extension', 'bili-archaeology');
 
     const partitionOptions = PARTITIONS.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
-    const keywordButtons = KEYWORD_PRESETS.map(k =>
-      `<button class="preset-keyword" data-keyword="${k}">${k}</button>`
-    ).join('');
+    const years = Object.keys(KEYWORD_PRESETS_BY_YEAR).map(Number).sort();
+    const keywordSectionsHtml = years.map(year => {
+      const isExpanded = year === DEFAULT_EXPANDED_YEAR;
+      const buttons = KEYWORD_PRESETS_BY_YEAR[year].map(k =>
+        `<button class="preset-keyword" data-keyword="${k}">${k}</button>`
+      ).join('');
+      return `
+        <div class="preset-year-section" data-year="${year}">
+          <div class="preset-year-header" data-year="${year}">
+            <span class="preset-year-arrow">${isExpanded ? '▼' : '▶'}</span>
+            <span class="preset-year-label">${year}</span>
+          </div>
+          <div class="preset-year-buttons" ${isExpanded ? '' : 'style="display:none"'}>
+            ${buttons}
+          </div>
+        </div>
+      `;
+    }).join('');
 
     container.innerHTML = `
       <div class="drag-handle" title="拖拽移动">
@@ -102,7 +134,7 @@
           <button id="archaeology-search-btn">🚀 考古</button>
         </div>
         <div class="preset-keywords">
-          ${keywordButtons}
+          ${keywordSectionsHtml}
         </div>
       </div>
 
@@ -290,7 +322,8 @@
     const endIdx = Math.min(startIdx + span - 1, timelineTotalMonths - 1);
 
     const randomPartition = PARTITIONS[Math.floor(Math.random() * PARTITIONS.length)].value;
-    const randomKeyword = KEYWORD_PRESETS[Math.floor(Math.random() * KEYWORD_PRESETS.length)];
+    const allKeywords = Object.values(KEYWORD_PRESETS_BY_YEAR).flat();
+    const randomKeyword = allKeywords[Math.floor(Math.random() * allKeywords.length)];
 
     setTimelineFromIndices(startIdx, endIdx);
     partitionSelect.value = randomPartition;
@@ -363,14 +396,50 @@
     } catch (e) {}
   }
 
-  // ---------- 关键词预设 ----------
+  // ---------- 关键词预设（按年份展开收起） ----------
   function setupPresetKeywords() {
+    // 年份表头点击展开/收起
+    document.querySelectorAll('.preset-year-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const year = header.dataset.year;
+        const section = header.closest('.preset-year-section');
+        const buttons = section.querySelector('.preset-year-buttons');
+        const arrow = header.querySelector('.preset-year-arrow');
+        const isExpanded = buttons.style.display !== 'none';
+        if (isExpanded) {
+          buttons.style.display = 'none';
+          arrow.textContent = '▶';
+        } else {
+          buttons.style.display = '';
+          arrow.textContent = '▼';
+        }
+      });
+    });
+
+    // 关键词按钮点击搜索
     document.querySelectorAll('.preset-keyword').forEach(btn => {
       btn.addEventListener('click', () => {
         searchInput.value = btn.dataset.keyword;
         performSearch();
       });
     });
+
+    // 默认展开 2018 年并滚动到该位置
+    const defaultYear = DEFAULT_EXPANDED_YEAR;
+    const defaultSection = document.querySelector(`.preset-year-section[data-year="${defaultYear}"]`);
+    if (defaultSection) {
+      // 确保 2018 年已展开（模板中已按 defaultExpandedYear 判断，这里保险一下）
+      const defaultButtons = defaultSection.querySelector('.preset-year-buttons');
+      const defaultArrow = defaultSection.querySelector('.preset-year-arrow');
+      if (defaultButtons && defaultButtons.style.display === 'none') {
+        defaultButtons.style.display = '';
+        if (defaultArrow) defaultArrow.textContent = '▼';
+      }
+      // 延迟滚动，等待面板渲染完成
+      setTimeout(() => {
+        defaultSection.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }, 100);
+    }
   }
 
   // ---------- 时间轴交互 ----------

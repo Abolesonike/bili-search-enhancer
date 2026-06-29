@@ -5,7 +5,7 @@
   "description": "B站搜索增强，支持拖拽时间轴、分区筛选、排序和随机跳跃考古。",
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
+      "matches": ["*://search.bilibili.com/*"],
       "js": ["content.js"],
       "css": ["style.css"],
       "run_at": "document_end"
