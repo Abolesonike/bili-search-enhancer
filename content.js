@@ -293,8 +293,8 @@
 
     const isFullRange = startIdx === 0 && endIdx === timelineTotalMonths - 1;
     if (!isFullRange) {
-      params.set('stime', monthIndexToUnix(startIdx, false));
-      params.set('etime', monthIndexToUnix(endIdx, true));
+      params.set('pubtime_begin_s', monthIndexToUnix(startIdx, false));
+      params.set('pubtime_end_s', monthIndexToUnix(endIdx, true));
     }
 
     if (partition && partition !== '0') {
@@ -404,11 +404,11 @@
       }
 
       timelineTotalMonths = getTimelineTotalMonths();
-      const stime = urlParams.get('stime');
-      const etime = urlParams.get('etime');
-      if (stime && etime) {
-        let startIdx = unixToMonthIndex(stime);
-        let endIdx = unixToMonthIndex(etime);
+      const pubtime_begin_s = urlParams.get('pubtime_begin_s');
+      const pubtime_end_s = urlParams.get('pubtime_end_s');
+      if (pubtime_begin_s && pubtime_end_s) {
+        let startIdx = unixToMonthIndex(pubtime_begin_s);
+        let endIdx = unixToMonthIndex(pubtime_end_s);
         startIdx = Math.max(0, Math.min(startIdx, timelineTotalMonths - 1));
         endIdx = Math.max(0, Math.min(endIdx, timelineTotalMonths - 1));
         setTimelineFromIndices(startIdx, endIdx);
