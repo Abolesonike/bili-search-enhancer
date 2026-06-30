@@ -441,34 +441,51 @@
   user-select: none;
 }
 
-/* ========== 随机跳跃 ========== */
-.random-row {
+/* ========== 操作按钮行（考古 + 随机跳跃） ========== */
+.action-row {
   margin-top: 2px;
+  gap: 10px;
 }
-.random-row label {
-  min-width: 70px;
+.action-row label {
+  display: none;
 }
-.random-jump-btn {
+.action-btn {
   flex: 1;
-  background: linear-gradient(135deg, #FB7299, #ff85a7);
   border: none;
   border-radius: 10px;
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 10px 16px;
+  font-size: 14px;
   font-weight: 700;
   color: white;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 4px 14px rgba(251, 114, 153, 0.30);
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
-.random-jump-btn:hover {
-  background: linear-gradient(135deg, #f25a8a, #ff6b9a);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(251, 114, 153, 0.45);
-}
-.random-jump-btn:active {
+.action-btn:active {
   transform: scale(0.96);
+}
+
+/* 考古按钮：品牌粉 */
+.primary-btn {
+  background: linear-gradient(135deg, #FB7299, #f25a8a);
+  box-shadow: 0 4px 16px rgba(251, 114, 153, 0.30);
+}
+.primary-btn:hover {
+  background: linear-gradient(135deg, #f25a8a, #e04878);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(251, 114, 153, 0.42);
+}
+
+/* 随机跳跃：Bilibili 蓝 */
+.bilibili-blue-btn {
+  background: linear-gradient(135deg, #23ADE5, #00AEEC);
+  box-shadow: 0 4px 16px rgba(0, 174, 236, 0.30);
+}
+.bilibili-blue-btn:hover {
+  background: linear-gradient(135deg, #00AEEC, #0099D4);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(0, 174, 236, 0.42);
 }
 
 /* 响应式时间轴 */
@@ -481,11 +498,11 @@
     width: 14px;
     height: 14px;
   }
-  .random-row label {
-    min-width: 60px;
+  .action-row {
+    gap: 8px;
   }
-  .random-jump-btn {
-    font-size: 12px;
-    padding: 7px 12px;
+  .action-btn {
+    font-size: 13px;
+    padding: 9px 10px;
   }
 }
