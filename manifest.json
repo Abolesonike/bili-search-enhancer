@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "B站考古工具 · 时间胶囊",
-  "version": "2.2",
+  "version": "2.4",
   "description": "B站搜索增强，支持拖拽时间轴、分区筛选、排序和随机跳跃考古。",
   "content_scripts": [
     {
@@ -11,5 +11,11 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": []
+  "permissions": [],
+  "web_accessible_resources": [
+    {
+      "resources": ["presets.json"],
+      "matches": ["*://search.bilibili.com/*"]
+    }
+  ]
 }

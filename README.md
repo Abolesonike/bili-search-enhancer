@@ -40,7 +40,8 @@
 ```
 ├── manifest.json   # 扩展清单配置（Manifest V3）
 ├── content.js      # 核心逻辑：UI构建、事件绑定、URL构建、拖拽处理
-└── style.css       # 样式表：悬浮面板样式（作用域隔离）
+├── style.css       # 样式表：悬浮面板样式（作用域隔离）
+└── presets.json    # 默认关键词预设配置（按年份分组）
 ```
 
 ## 核心参数说明
@@ -92,15 +93,26 @@ const PARTITIONS = [
 
 ### 添加预设关键词
 
-编辑 `content.js` 中的 `KEYWORD_PRESETS` 数组：
+关键词预设存储在 `presets.json` 中，按年份分组：
 
-```javascript
-const KEYWORD_PRESETS = [
-  '初音未来', '东方Project',
-  // 添加新关键词...
-  '新预设词',
-];
+```json
+{
+  "version": "1",
+  "defaultExpandedYear": 2018,
+  "presets": {
+    "2009": ["初音未来", "东方Project"],
+    "2010": ["新预设词"],
+    ...
+  }
+}
 ```
+
+你也可以直接在面板中管理预设：
+
+- 点击关键词预设区的 **管理** 按钮进入编辑模式。
+- 在编辑模式下可以添加、删除、修改关键词，或添加/删除年份。
+- 修改会自动保存到浏览器本地存储（`localStorage`）。
+- 点击 **恢复默认** 可清空本地修改，恢复为 `presets.json` 中的出厂配置。
 
 ### 修改默认配置
 

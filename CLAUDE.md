@@ -18,9 +18,10 @@ To verify changes after editing, reload the extension in the extensions page and
 ## File structure
 
 ```
-manifest.json   # Manifest V3 definition: content script, matches, permissions
+manifest.json   # Manifest V3 definition: content script, matches, permissions, web_accessible_resources
 content.js      # All extension logic: UI creation, event binding, URL building, drag handling
 style.css       # All styles for the injected floating panel
+presets.json    # Default keyword presets by year (loaded by content.js)
 ```
 
 ## Architecture
@@ -44,9 +45,10 @@ Hard-coded arrays in `content.js` define the UI options:
 
 - `ERAS` — year ranges mapped to `stime`/`etime`.
 - `PARTITIONS` — Bilibili `tids` values and their Chinese labels.
-- `KEYWORD_PRESETS` — quick-search keyword buttons shown below the input.
 
-Modify these arrays directly to add or change eras, partitions, or preset keywords.
+Keyword presets are stored in `presets.json` and loaded at runtime. The file is exposed to the content script via `web_accessible_resources`. Users can also add, edit, and delete keywords/years through the panel's **管理** button; their changes are persisted in `localStorage`. To restore the shipped defaults, use **恢复默认** in the preset toolbar.
+
+Modify `presets.json` directly to change the factory-default eras or preset keywords.
 
 ## Notes for changes
 

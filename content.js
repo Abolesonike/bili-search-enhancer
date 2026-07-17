@@ -22,46 +22,62 @@
     { value: '33', label: '知识' },
   ];
 
-  // 预设关键词按年份划分，展开时渲染按钮，收起时隐藏
-  // 数据来源：历年B站热门搜索词、年度热梗、重大社会新闻相关视频标题关键词
-  // 默认展开 2018 年
-  const KEYWORD_PRESETS_BY_YEAR = {
-    2009: ['初音未来', 'VOCALOID', 'MikuFans', '二次元', 'ACG', '东方Project', 'NICONICO'],
-    2010: ['Bilibili', '弹幕', '新番', 'UP主', 'MMD', '鬼畜', '蓝蓝路', '动画杂谈', '兄贵', '哲学', 
-      'van', '暗黑' ],
-    2011: ['金坷垃', '葛平', '鬼畜调教', 'MMD', '二次元', '乐正绫', 'Vocaloid中文曲', '魔法禁书目录', 
-      'Fate/Zero', '未闻花名', '东方Project', 'nico文化'],
-    2012: ['哲学', '比利王', '千本樱', '鬼畜全明星', '动漫杂谈', '游戏实况', '二次元', '全职猎人', '弹幕礼仪', '空耳', 
-      '某科学的超电磁炮S', '洛天依'],
-    2013: ['进击的巨人', '暴走大事件', '万万没想到' , '雷军', 'Are you OK', 'V家', '刀剑神域', '我的世界', 'MMD配布',
-       '动漫盘点','bilibili拜年祭'],
-    2014: ['敖厂长','四大欠王', '丞相司徒', '动漫推荐', '2333', '炮姐', '二次元', '鬼畜教学',  
-      'Fate/stay night', '东京喰种',  '游戏人生', '斩赤红之瞳', '王朗'],
-    2015: ['LOL', '守望先锋', '666', '漫展', '二次元', '鬼畜', 'MMD舞蹈', '动漫壁纸','papi酱', '变形记', 
-      '滑板鞋','一拳超人', '金馆长', '梁非凡', '丞相司徒', '奥特曼', '假面骑士', '干物妹小埋'],
-    2016: ['极乐净土', 'Re从零开始', '一人之下', '哲学', '香蕉君', '拜年祭', '冯提莫', '陈一发', '皮皮虾', 
-      '友谊小船', '蓝瘦香菇', '葛优瘫', '阴阳师', '王健林', '洪荒之力'],
-    2017: ['面筋哥', '波澜哥', '陈独秀', '全职高手', '你的名字', '镇魂', '卢本伟', '中国有嘻哈', 'freestyle', 
-      '打call', 'diss', '皮皮虾我们走', '战狼2', '川普'],
-    2018: ['蔡徐坤', '鸡你太美', '改革春风吹满地', '血小板', '工作细胞', '魔道祖师', '王思聪', 'IG夺冠','华农兄弟',
-       '手工耿', '敬汉卿', '郭杰瑞', 'RNG', 'skr', '真香', '锦鲤', '创造101', '杨超越'],
-    2019: ['影流之主', '猛男版新宝岛', '奥利给', '哪吒之魔童降世', '陈情令', '敬汉卿商标', '百大UP主', '何同学', '5G',
-      '大碗宽面', '巫师财经', '半佛仙人', 'AWSL', '盘他', '流浪地球',  '996', '复联4'],
-    2020: ['后浪', '罗翔说刑法', '钉钉', '淡黄的长裙', '青春有你2',  '赛博朋克2077','原神', 
-      '丁真', '马保国', '刘华强买瓜', '爷青回','黑人抬棺', '歪嘴龙王', '科比', '年轻人不讲武德', '耗子尾汁'],
-    2021: ['何同学', '华强买瓜', '觉醒年代', '长津湖', 'EDG夺冠', '原神', '张忠兴', '杨笠', '脱口秀大会', '双减', 
-      '破防了', 'YYDS', '躺平', '内卷', '你好李焕英', '三体动画', '元宇宙'],
-    2022: ['二舅', '刘畊宏', '王心凌爱你', '孤勇者', '退退退', '潘周聃', '我是云南的', '卡塔尔世界杯', 'Cheems', 
-      '优雅', '最伟大的作品', '神女劈观', '唐山打人', '俄乌冲突', '世界杯', '羊了个羊', '你这背景太假了'],
-    2023: ['科目三', '恐龙抗狼', '多巴胺', '尊嘟假嘟', '泰裤辣', '消失的她', '狂飙', '星穹铁道', '封神第一部', '刀郎罗刹海市', 
-      '啊？', '遥遥领先', '挖呀挖', '显眼包', '漫长的季节', '八角笼中', '淄博烧烤', '贵州村超'],
-    2024: ['黑神话悟空', '周处除三害', '热辣滚烫', '第二十条', '我的阿勒泰', '歌手2024', '种地吧', '恋与深空', '鸣潮', 
-      '绝区零', '胖猫', '开封王婆', '郭有才', '瑞士卷', '向佐', '麦琳', '永夜星河', '天命人', '班味', '遥遥领先', '胖东来'],
-    2025: ['哪吒之魔童闹海', 'DeepSeek', 'Manus', '燕云十六声', '国色芳华', '难哄', '雁回时', '种地吧3', '歌手2025', '王星',
-       '缅甸电诈', '小红书对账', 'TikTok难民', '美国大选', 'Switch2'],
-    2026: ['文艺复兴', '哪吒2长尾', 'DeepSeek持续', 'AI Agent', '世界杯', '冬奥会', '国产3A', '原神', '崩铁', '短剧', '种地吧4'],
-  };
-  const DEFAULT_EXPANDED_YEAR = 2018;
+  // ---------- 关键词预设配置 ----------
+  const PRESETS_STORAGE_KEY = 'bili-archaeology-presets';
+  let factoryPresets = {};
+  let keywordPresets = {};
+  let defaultExpandedYear = 2018;
+  let isPresetEditMode = false;
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  async function loadPresets() {
+    try {
+      const url = chrome.runtime.getURL('presets.json');
+      const res = await fetch(url);
+      const factory = await res.json();
+      factoryPresets = factory.presets || {};
+      defaultExpandedYear = factory.defaultExpandedYear || 2018;
+    } catch (e) {
+      factoryPresets = {};
+      defaultExpandedYear = 2018;
+    }
+    keywordPresets = JSON.parse(JSON.stringify(factoryPresets));
+    try {
+      const raw = localStorage.getItem(PRESETS_STORAGE_KEY);
+      if (raw) {
+        const stored = JSON.parse(raw);
+        if (stored.presets) keywordPresets = stored.presets;
+      }
+    } catch (e) {}
+  }
+
+  function savePresets() {
+    try {
+      localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify({
+        version: '1',
+        presets: keywordPresets
+      }));
+    } catch (e) {}
+  }
+
+  function resetPresets() {
+    if (!confirm('确定恢复默认关键词预设？所有自定义修改将丢失。')) return;
+    keywordPresets = JSON.parse(JSON.stringify(factoryPresets));
+    try { localStorage.removeItem(PRESETS_STORAGE_KEY); } catch (e) {}
+    renderPresetKeywords();
+  }
+
+  function getSortedYears() {
+    return Object.keys(keywordPresets).map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+  }
 
   // ---------- 时间轴工具函数 ----------
   function getCurrentYearMonth() {
@@ -108,18 +124,53 @@
     return `${s.year}-${pad(s.month)} ~ ${e.year}-${pad(e.month)}`;
   }
 
-  // ---------- 创建悬浮框 ----------
-  function createSearchEnhancer() {
-    const container = document.createElement('div');
-    container.id = 'bili-archaeology-tool';
-    container.setAttribute('data-extension', 'bili-archaeology');
+  // ---------- 关键词预设渲染与 CRUD ----------
+  function renderPresetKeywords() {
+    const wrapper = document.getElementById('archaeology-preset-keywords');
+    if (!wrapper) return;
 
-    const partitionOptions = PARTITIONS.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
-    const years = Object.keys(KEYWORD_PRESETS_BY_YEAR).map(Number).sort();
+    const years = getSortedYears();
+    if (years.length === 0) {
+      wrapper.innerHTML = `
+        <div class="preset-year-section">
+          <div class="preset-year-header">
+            <span class="preset-year-arrow">▶</span>
+            <span class="preset-year-label">暂无预设</span>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     const keywordSectionsHtml = years.map(year => {
-      const isExpanded = year === DEFAULT_EXPANDED_YEAR;
-      const buttons = KEYWORD_PRESETS_BY_YEAR[year].map(k =>
-        `<button class="preset-keyword" data-keyword="${k}">${k}</button>`
+      const isExpanded = year === defaultExpandedYear;
+      const keywords = keywordPresets[String(year)] || [];
+      if (isPresetEditMode) {
+        const editRows = keywords.map((k, idx) => `
+          <div class="preset-edit-row" data-year="${year}" data-index="${idx}">
+            <input type="text" class="preset-edit-input" value="${escapeHtml(k)}" data-year="${year}" data-index="${idx}">
+            <button class="preset-delete-btn" data-year="${year}" data-index="${idx}" title="删除">✕</button>
+          </div>
+        `).join('');
+        return `
+          <div class="preset-year-section" data-year="${year}">
+            <div class="preset-year-header" data-year="${year}">
+              <span class="preset-year-arrow">▼</span>
+              <span class="preset-year-label">${year}</span>
+              <button class="preset-delete-year-btn" data-year="${year}" title="删除该年份">删除</button>
+            </div>
+            <div class="preset-year-buttons" style="display:block">
+              ${editRows}
+              <div class="preset-add-row" data-year="${year}">
+                <input type="text" class="preset-add-input" data-year="${year}" placeholder="添加关键词...">
+                <button class="preset-add-btn" data-year="${year}">添加</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      const buttons = keywords.map(k =>
+        `<button class="preset-keyword" data-keyword="${escapeHtml(k)}">${escapeHtml(k)}</button>`
       ).join('');
       return `
         <div class="preset-year-section" data-year="${year}">
@@ -133,6 +184,27 @@
         </div>
       `;
     }).join('');
+
+    const addYearRow = isPresetEditMode ? `
+      <div class="preset-add-year-row">
+        <input type="text" class="preset-add-year-input" id="archaeology-add-year-input" placeholder="新年份，如 2027">
+        <button class="preset-add-year-btn" id="archaeology-add-year-btn">添加年份</button>
+      </div>
+    ` : '';
+
+    wrapper.innerHTML = keywordSectionsHtml + addYearRow;
+
+    setupPresetKeywords();
+    if (isPresetEditMode) setupPresetCrud();
+  }
+
+  // ---------- 创建悬浮框 ----------
+  function createSearchEnhancer() {
+    const container = document.createElement('div');
+    container.id = 'bili-archaeology-tool';
+    container.setAttribute('data-extension', 'bili-archaeology');
+
+    const partitionOptions = PARTITIONS.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
 
     container.innerHTML = `
       <div class="drag-handle" title="拖拽移动">
@@ -151,8 +223,15 @@
         <div class="search-row">
           <input type="text" id="archaeology-search-input" placeholder="输入考古关键词..." autocomplete="off">
         </div>
-        <div class="preset-keywords">
-          ${keywordSectionsHtml}
+        <div class="preset-toolbar">
+          <span class="preset-toolbar-label">📌 关键词预设</span>
+          <div class="preset-toolbar-actions">
+            <button class="preset-toolbar-btn" id="archaeology-preset-reset-btn" style="display:none">↺ 恢复默认</button>
+            <button class="preset-toolbar-btn" id="archaeology-preset-edit-btn">⚙ 管理</button>
+          </div>
+        </div>
+        <div class="preset-keywords" id="archaeology-preset-keywords">
+          <!-- 由 renderPresetKeywords() 动态填充 -->
         </div>
       </div>
 
@@ -202,6 +281,7 @@
       </div>
     `;
     document.body.appendChild(container);
+    renderPresetKeywords();
 
     // 折叠后的悬浮标签作为 container 的兄弟元素，单独追加到 body
     const collapsedTabEl = document.createElement('div');
@@ -225,7 +305,8 @@
   let timelineTrackEl, timelineRangeEl, timelineReadoutEl, timelineTicksEl;
   let handleStartEl, handleEndEl, randomBtn;
   let minimizeBtn, closeBtn, collapsedTab, animToggleBtn;
-  
+  let presetEditBtn, presetResetBtn;
+
   // ---------- 时间轴状态 ----------
   let timelineTotalMonths = getTimelineTotalMonths();
   let timelineStartMonth = 0;
@@ -245,6 +326,8 @@
     minimizeBtn = document.getElementById('archaeology-minimize-btn');
     closeBtn = document.getElementById('archaeology-close-btn');
     collapsedTab = document.getElementById('archaeology-collapsed-tab');
+    presetEditBtn = document.getElementById('archaeology-preset-edit-btn');
+    presetResetBtn = document.getElementById('archaeology-preset-reset-btn');
 
     // 根据设置更新开关按钮状态
     if (animToggleBtn) {
@@ -419,7 +502,11 @@
     const endIdx = Math.min(startIdx + span - 1, timelineTotalMonths - 1);
 
     const randomPartition = PARTITIONS[Math.floor(Math.random() * PARTITIONS.length)].value;
-    const allKeywords = Object.values(KEYWORD_PRESETS_BY_YEAR).flat();
+    const allKeywords = Object.values(keywordPresets).flat().filter(k => String(k).trim());
+    if (allKeywords.length === 0) {
+      statusDisplay.textContent = '⚠️ 没有可用的关键词预设';
+      return;
+    }
     const randomKeyword = allKeywords[Math.floor(Math.random() * allKeywords.length)];
 
     setTimelineFromIndices(startIdx, endIdx);
@@ -444,7 +531,7 @@
     container.style.display = '';
     collapsedTab.style.display = 'none';
     // 恢复后再次滚动到默认年份
-    const defaultSection = container.querySelector(`.preset-year-section[data-year="${DEFAULT_EXPANDED_YEAR}"]`);
+    const defaultSection = container.querySelector(`.preset-year-section[data-year="${defaultExpandedYear}"]`);
     if (defaultSection) {
       setTimeout(() => {
         defaultSection.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -518,7 +605,10 @@
   function setupPresetKeywords() {
     // 年份表头点击展开/收起
     document.querySelectorAll('.preset-year-header').forEach(header => {
-      header.addEventListener('click', () => {
+      header.addEventListener('click', (e) => {
+        // 编辑模式下不切换展开状态；避免点击删除按钮时触发
+        if (isPresetEditMode) return;
+        if (e.target.closest('.preset-delete-year-btn')) return;
         const year = header.dataset.year;
         const section = header.closest('.preset-year-section');
         const buttons = section.querySelector('.preset-year-buttons');
@@ -542,21 +632,122 @@
       });
     });
 
-    // 默认展开 2018 年并滚动到该位置
-    const defaultYear = DEFAULT_EXPANDED_YEAR;
+    if (isPresetEditMode) return;
+
+    // 默认展开年份并滚动到该位置
+    const defaultYear = defaultExpandedYear;
     const defaultSection = document.querySelector(`.preset-year-section[data-year="${defaultYear}"]`);
     if (defaultSection) {
-      // 确保 2018 年已展开（模板中已按 defaultExpandedYear 判断，这里保险一下）
       const defaultButtons = defaultSection.querySelector('.preset-year-buttons');
       const defaultArrow = defaultSection.querySelector('.preset-year-arrow');
       if (defaultButtons && defaultButtons.style.display === 'none') {
         defaultButtons.style.display = '';
         if (defaultArrow) defaultArrow.textContent = '▼';
       }
-      // 延迟滚动，等待面板渲染完成
       setTimeout(() => {
         defaultSection.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }, 100);
+    }
+  }
+
+  // ---------- 关键词预设 CRUD ----------
+  function setupPresetCrud() {
+    // 修改关键词
+    document.querySelectorAll('.preset-edit-input').forEach(input => {
+      input.addEventListener('change', () => {
+        const year = input.dataset.year;
+        const idx = parseInt(input.dataset.index, 10);
+        const value = input.value.trim();
+        if (!year || isNaN(idx) || !keywordPresets[year]) return;
+        if (!value) {
+          input.value = keywordPresets[year][idx];
+          return;
+        }
+        keywordPresets[year][idx] = value;
+        savePresets();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          input.blur();
+        }
+      });
+    });
+
+    // 删除关键词
+    document.querySelectorAll('.preset-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const year = btn.dataset.year;
+        const idx = parseInt(btn.dataset.index, 10);
+        if (!year || isNaN(idx) || !keywordPresets[year]) return;
+        keywordPresets[year].splice(idx, 1);
+        if (keywordPresets[year].length === 0) {
+          delete keywordPresets[year];
+        }
+        savePresets();
+        renderPresetKeywords();
+      });
+    });
+
+    // 添加关键词
+    document.querySelectorAll('.preset-add-input').forEach(input => {
+      const doAdd = () => {
+        const year = input.dataset.year;
+        const value = input.value.trim();
+        if (!year || !value || !keywordPresets[year]) return;
+        keywordPresets[year].push(value);
+        savePresets();
+        renderPresetKeywords();
+      };
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          doAdd();
+        }
+      });
+      const addBtn = input.parentElement.querySelector('.preset-add-btn');
+      if (addBtn) addBtn.addEventListener('click', doAdd);
+    });
+
+    // 删除年份
+    document.querySelectorAll('.preset-delete-year-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const year = btn.dataset.year;
+        if (!year || !keywordPresets[year]) return;
+        if (!confirm(`确定删除 ${year} 年的所有关键词预设？`)) return;
+        delete keywordPresets[year];
+        savePresets();
+        renderPresetKeywords();
+      });
+    });
+
+    // 添加年份
+    const addYearBtn = document.getElementById('archaeology-add-year-btn');
+    const addYearInput = document.getElementById('archaeology-add-year-input');
+    if (addYearBtn && addYearInput) {
+      const doAddYear = () => {
+        const value = addYearInput.value.trim();
+        const year = parseInt(value, 10);
+        if (!value || isNaN(year) || year < 1900 || year > 2100) {
+          alert('请输入有效的年份（1900-2100）');
+          return;
+        }
+        const yearKey = String(year);
+        if (keywordPresets[yearKey]) {
+          alert(`${year} 年已存在`);
+          return;
+        }
+        keywordPresets[yearKey] = [];
+        savePresets();
+        renderPresetKeywords();
+      };
+      addYearBtn.addEventListener('click', doAddYear);
+      addYearInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          doAddYear();
+        }
+      });
     }
   }
 
@@ -757,6 +948,18 @@
     minimizeBtn.addEventListener('click', minimizePanel);
     closeBtn.addEventListener('click', closePanel);
 
+    if (presetEditBtn) {
+      presetEditBtn.addEventListener('click', () => {
+        isPresetEditMode = !isPresetEditMode;
+        presetEditBtn.textContent = isPresetEditMode ? '✓ 完成' : '⚙ 管理';
+        if (presetResetBtn) presetResetBtn.style.display = isPresetEditMode ? '' : 'none';
+        renderPresetKeywords();
+      });
+    }
+    if (presetResetBtn) {
+      presetResetBtn.addEventListener('click', resetPresets);
+    }
+
     partitionSelect.addEventListener('change', updateStatusPreview);
     orderSelect.addEventListener('change', updateStatusPreview);
 
@@ -766,8 +969,10 @@
   }
 
   // ---------- 初始化 ----------
-  function init() {
+  async function init() {
     if (document.getElementById('bili-archaeology-tool')) return;
+
+    await loadPresets();
 
     timelineTotalMonths = getTimelineTotalMonths();
     timelineEndMonth = timelineTotalMonths - 1;
@@ -779,7 +984,6 @@
     bindEvents();
     setupDrag();
     setupCollapsedTabDrag();
-    setupPresetKeywords();
     autoFillFromUrl();
 
     if (!searchInput.value) {
