@@ -195,7 +195,10 @@
 
       <div class="info-row">
         <span id="archaeology-status">💗 准备考古...</span>
-        <button id="archaeology-reset-btn">↺ 重置</button>
+        <div class="info-actions">
+          <button id="archaeology-anim-toggle-btn" class="anim-toggle-btn" title="时空跳转动画">✨ 动画</button>
+          <button id="archaeology-reset-btn">↺ 重置</button>
+        </div>
       </div>
     `;
     document.body.appendChild(container);
@@ -221,8 +224,8 @@
   let container, searchInput, searchBtn, partitionSelect, orderSelect, statusDisplay, resetBtn;
   let timelineTrackEl, timelineRangeEl, timelineReadoutEl, timelineTicksEl;
   let handleStartEl, handleEndEl, randomBtn;
-  let minimizeBtn, closeBtn, collapsedTab;
-
+  let minimizeBtn, closeBtn, collapsedTab, animToggleBtn;
+  
   // ---------- 时间轴状态 ----------
   let timelineTotalMonths = getTimelineTotalMonths();
   let timelineStartMonth = 0;
@@ -238,9 +241,15 @@
     orderSelect = document.getElementById('archaeology-order-select');
     statusDisplay = document.getElementById('archaeology-status');
     resetBtn = document.getElementById('archaeology-reset-btn');
+    animToggleBtn = document.getElementById('archaeology-anim-toggle-btn');
     minimizeBtn = document.getElementById('archaeology-minimize-btn');
     closeBtn = document.getElementById('archaeology-close-btn');
     collapsedTab = document.getElementById('archaeology-collapsed-tab');
+
+    // 根据设置更新开关按钮状态
+    if (animToggleBtn) {
+      animToggleBtn.classList.toggle('anim-toggle-on', isAnimEnabled());
+    }
 
     timelineTrackEl = document.getElementById('archaeology-timeline-track');
     timelineRangeEl = document.getElementById('archaeology-timeline-range');
@@ -324,6 +333,57 @@
     return `${base}?${params.toString()}`;
   }
 
+  // ---------- 时空跳转动画 ----------
+  const ANIM_STORAGE_KEY = 'bili-archaeology-anim-enabled';
+
+  function isAnimEnabled() {
+    try {
+      const stored = localStorage.getItem(ANIM_STORAGE_KEY);
+      return stored === null ? true : stored === 'true';
+    } catch { return true; }
+  }
+
+  function setAnimEnabled(enabled) {
+    try { localStorage.setItem(ANIM_STORAGE_KEY, String(enabled)); } catch {}
+  }
+
+  function createAnimOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'bili-archaeology-anim-overlay';
+    overlay.innerHTML = `
+      <div class="anim-core">
+        <div class="anim-ring ring-1"></div>
+        <div class="anim-ring ring-2"></div>
+        <div class="anim-ring ring-3"></div>
+        <div class="anim-particle-field"></div>
+        <div class="anim-text">时空跳跃中...</div>
+      </div>
+      <div class="anim-skip">点击任意处跳过</div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function playTimeWarpAnimation(onComplete) {
+    if (!isAnimEnabled()) { onComplete(); return; }
+
+    const overlay = createAnimOverlay();
+    let skipped = false;
+
+    const skip = () => {
+      if (skipped) return;
+      skipped = true;
+      overlay.classList.add('anim-skipping');
+      setTimeout(() => { overlay.remove(); onComplete(); }, 300);
+    };
+
+    overlay.addEventListener('click', skip);
+    overlay.addEventListener('touchstart', skip, { passive: true });
+
+    // 动画将在 CSS 中处理，1.2s 后自动触发完成
+    overlay._timer = setTimeout(() => { if (!skipped) { skip(); } }, 1200);
+  }
+
   // ---------- 执行考古搜索 ----------
   function performSearch() {
     const keyword = searchInput.value.trim();
@@ -371,9 +431,7 @@
     const partitionLabel = partitionSelect.options[partitionSelect.selectedIndex]?.text || '全部';
     statusDisplay.textContent = `🎲 随机跳跃: "${randomKeyword}" · ${timeLabel} · ${partitionLabel}`;
 
-    setTimeout(() => {
-      performSearch();
-    }, 180);
+    playTimeWarpAnimation(() => { performSearch(); });
   }
 
   // ---------- 最小化/恢复/关闭 ----------
@@ -686,6 +744,15 @@
     });
     resetBtn.addEventListener('click', resetFilters);
     randomBtn.addEventListener('click', performRandomJump);
+
+    animToggleBtn.addEventListener('click', () => {
+      const enabled = isAnimEnabled();
+      const newEnabled = !enabled;
+      setAnimEnabled(newEnabled);
+      animToggleBtn.classList.toggle('anim-toggle-on', newEnabled);
+      animToggleBtn.title = newEnabled ? '时空跳转动画：开（点击关闭）' : '时空跳转动画：关（点击开启）';
+    });
+    animToggleBtn.title = isAnimEnabled() ? '时空跳转动画：开（点击关闭）' : '时空跳转动画：关（点击开启）';
 
     minimizeBtn.addEventListener('click', minimizePanel);
     closeBtn.addEventListener('click', closePanel);
